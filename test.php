@@ -12,11 +12,6 @@ if (file_exists($csvFile) && is_readable($csvFile)) {
     }
 }
 
-function isCsvFileValid()
-{
-    global $csvFile;
-    return file_exists($csvFile) && is_readable($csvFile);
-}
 
 function getDatabaseData()
 {
