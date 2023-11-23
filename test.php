@@ -3,7 +3,7 @@ require ($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before
 CModule::IncludeModule("iblock");
 const InfoBlockId = 4;              //общая константа id инфоблока
 $csvFilePath = "test.csv";
-
+echo 'test';
 if (file_exists($csvFilePath) && is_readable($csvFilePath)){     //выполняю валидацию и получаю данные
     $csvData= readCsvData();
     updateDatabase($csvData);
