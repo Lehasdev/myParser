@@ -1,9 +1,9 @@
 <?php
 require ($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
 CModule::IncludeModule("iblock");
-const InfoBlockId = 4;              //общая константа id инфоблока
+const InfoBlockId = 1;              //общая константа id инфоблока
 $csvFilePath = "test.csv";
-echo 'test2';
+
 if (file_exists($csvFilePath) && is_readable($csvFilePath)){     //выполняю валидацию и получаю данные
     $csvData= readCsvData();
     updateDatabase($csvData);
@@ -54,6 +54,9 @@ function processData($data){
 }
 function updateExistingElement($el,$element,$id,$name,$previewText,$detailText,$property1,$property2){
     $arLoadProductArray = array(
+
+		"IBLOCK_SECTION" => false, 
+		"ACTIVE"         => "Y",
         "XML_ID" => $id,
         "NAME" => $name,
         "PREVIEW_TEXT" => $previewText,
@@ -63,15 +66,19 @@ function updateExistingElement($el,$element,$id,$name,$previewText,$detailText,$
             "PROP_2" => $property2,
         ),
     );         //сравниваю элементы csv и бд
-    if( $arLoadProductArray["XML_ID"]===$element["XML_ID"]
-        && $arLoadProductArray["NAME"]===$element["NAME"]
-        && $arLoadProductArray["PREVIEW_TEXT"]===$element["PREVIEW_TEXT"]
-        && $arLoadProductArray["DETAIL_TEXT"]===$element["DETAIL_TEXT"]
-        && $arLoadProductArray["PROPERTY_PROP_1"]===$element["PROPERTY_PROP_1"]
-        && $arLoadProductArray["PROPERTY_PROP_2"]===$element["PROPERTY_PROP_2"]) {
-        echo "csv не изменен, масивы данных одинаковы";
+	echo"<pre>";var_dump($element);echo"</pre>";
+	echo"<pre>";var_dump($arLoadProductArray);echo"</pre>";
+
+    if( $arLoadProductArray["XML_ID"]==$element["XML_ID"]
+        && $arLoadProductArray["NAME"]==$element["NAME"]
+        && $arLoadProductArray["PREVIEW_TEXT"]==$element["PREVIEW_TEXT"]
+        && $arLoadProductArray["DETAIL_TEXT"]==$element["DETAIL_TEXT"]
+	   && $arLoadProductArray["PROPERTY_VALUES"]["PROP_1"]==$element["PROPERTY_PROP_1_VALUE"]
+        && $arLoadProductArray["PROPERTY_VALUES"]["PROP_2"]==$element["PROPERTY_PROP_2_VALUE"]) {
+        echo "csv не изменен, масивы данных одинаковы <br>";
+
     }else{
-        echo "изменен";
+        echo "изменен <br>";
         $el->Update($element["ID"], $arLoadProductArray); // есть отличия, актуализирую базу данных
     }
 }
@@ -85,11 +92,10 @@ function addNewElement($el,$id,$name,$previewText,$detailText,$property1,$proper
         "PROPERTY_VALUES" => array(
             "PROP_1" => $property1,
             "PROP_2" => $property2,
-        ),
-    );
+        ),);
 
     $el->Add($arLoadProductArray);
-    echo "csv изменился, массивы данных разные";
+    echo "csv изменился, массивы данных разные <br>";
 }
 
 function deleteExtraRecords($csvData)
